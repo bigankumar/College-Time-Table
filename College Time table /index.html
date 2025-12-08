@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart College Timetable Manager</title>
 
+<!-- Google Material 3 Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <!-- Link External CSS -->
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css">
 
 </head>
 <body>
@@ -14,341 +20,310 @@
 <!-- ====================================================== -->
 <!-- LOGIN SELECTION SCREEN -->
 <!-- ====================================================== -->
-<div id="loginScreen" class="center-box">
-    <h2>Select Your Role</h2>
-    <button class="btn" onclick="openStudentReg()">Student Login</button>
-    <button class="btn" onclick="openTeacherReg()">Teacher Login</button>
-    <button class="btn" onclick="adminDirectLogin()">Admin Login</button>
+<div id="loginScreen" class="m3-card center-box">
+    <h2 class="title">Select Your Role</h2>
+
+    <button class="m3-btn" onclick="openStudentReg()">Student Login</button>
+    <button class="m3-btn" onclick="openTeacherReg()">Teacher Login</button>
+    <button class="m3-btn" onclick="adminDirectLogin()">Admin Login</button>
 </div>
 
 <!-- ====================================================== -->
 <!-- STUDENT REGISTER -->
 <!-- ====================================================== -->
-<div id="studentReg" class="center-box hidden">
-    <h2>Student Registration</h2>
-    <input id="stuName" class="input" placeholder="Your Name" />
-    <input id="stuEmail" class="input" placeholder="Email" />
-    <button class="btn" onclick="registerStudent()">Register</button>
-    <p style="margin-top:15px;">Already registered?</p>
-    <button class="btn" onclick="openStudentLogin()">Login</button>
+<div id="studentReg" class="m3-card center-box hidden">
+    <h2 class="title">Student Registration</h2>
+
+    <input id="stuName" class="m3-input" placeholder="Your Name">
+    <input id="stuEmail" class="m3-input" placeholder="Email">
+
+    <button class="m3-btn" onclick="registerStudent()">Register</button>
+
+    <p class="small">Already registered?</p>
+    <button class="m3-btn secondary" onclick="openStudentLogin()">Login</button>
 </div>
 
+<!-- ====================================================== -->
 <!-- STUDENT LOGIN -->
-<div id="studentLogin" class="center-box hidden">
-    <h2>Student Login</h2>
-    <input id="stuEmailLogin" class="input" placeholder="Email" />
-    <button class="btn" onclick="studentLoginNow()">Login</button>
+<!-- ====================================================== -->
+<div id="studentLogin" class="m3-card center-box hidden">
+    <h2 class="title">Student Login</h2>
+
+    <input id="stuEmailLogin" class="m3-input" placeholder="Email">
+
+    <button class="m3-btn" onclick="studentLoginNow()">Login</button>
 </div>
 
 <!-- ====================================================== -->
 <!-- TEACHER REGISTER -->
 <!-- ====================================================== -->
-<div id="teacherReg" class="center-box hidden">
-    <h2>Teacher Registration</h2>
-    <input id="teachName" class="input" placeholder="Your Name" />
-    <input id="teachEmail" class="input" placeholder="Email" />
-    <button class="btn" onclick="registerTeacher()">Register</button>
-    <p style="margin-top:15px;">Already registered?</p>
-    <button class="btn" onclick="openTeacherLogin()">Login</button>
+<div id="teacherReg" class="m3-card center-box hidden">
+    <h2 class="title">Teacher Registration</h2>
+
+    <input id="teachName" class="m3-input" placeholder="Your Name">
+    <input id="teachEmail" class="m3-input" placeholder="Email">
+
+    <button class="m3-btn" onclick="registerTeacher()">Register</button>
+
+    <p class="small">Already registered?</p>
+    <button class="m3-btn secondary" onclick="openTeacherLogin()">Login</button>
 </div>
 
+<!-- ====================================================== -->
 <!-- TEACHER LOGIN -->
-<div id="teacherLogin" class="center-box hidden">
-    <h2>Teacher Login</h2>
-    <input id="teachEmailLogin" class="input" placeholder="Email" />
-    <button class="btn" onclick="teacherLoginNow()">Login</button>
+<!-- ====================================================== -->
+<div id="teacherLogin" class="m3-card center-box hidden">
+    <h2 class="title">Teacher Login</h2>
+
+    <input id="teachEmailLogin" class="m3-input" placeholder="Email">
+
+    <button class="m3-btn" onclick="teacherLoginNow()">Login</button>
 </div>
 
 <!-- ====================================================== -->
 <!-- ADMIN LOGIN -->
 <!-- ====================================================== -->
-<div id="adminLogin" class="center-box hidden">
-    <h2>Admin Login</h2>
-    <input id="adminEmail" class="input" placeholder="Admin Email" />
-    <input id="adminPass" type="password" class="input" placeholder="Password" />
-    <button class="btn" onclick="adminLoginNow()">Login</button>
+<div id="adminLogin" class="m3-card center-box hidden">
+    <h2 class="title">Admin Login</h2>
+
+    <input id="adminEmail" class="m3-input" placeholder="Admin Email">
+    <input id="adminPass" type="password" class="m3-input" placeholder="Password">
+
+    <button class="m3-btn" onclick="adminLoginNow()">Login</button>
 </div>
 
+
 <!-- ====================================================== -->
-<!-- MAIN APPLICATION -->
+<!-- MAIN APP -->
 <!-- ====================================================== -->
 <div id="app" style="display:none;">
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-left">
-            <h1>📚 Smart College Timetable Manager</h1>
-            <div id="currentTime" class="current-time"></div>
-            <div id="loggedUser" style="color:#444; font-size:14px; margin-top:4px;"></div>
-        </div>
-
-        <div class="header-actions" id="adminButtons">
-            <button class="btn-header" onclick="exportData()">📥 Export Data</button>
-            <button class="btn-header" onclick="importData()">📤 Import Data</button>
-            <button class="btn-header" onclick="clearAllData()">🗑️ Clear All</button>
-            <button class="btn-header" onclick="logout()">Logout</button>
-        </div>
-    </div>
-
-    <!-- ALERT BOX -->
-    <div class="alert-box" id="alertBox">
-        <strong>⏰ Upcoming Class Alert!</strong>
-        <div id="alertMessage"></div>
-    </div>
     <!-- ====================================================== -->
-    <!-- STUDENT DASHBOARD STAT CARDS (Custom Student UI) -->
+    <!-- TOP HEADER -->
     <!-- ====================================================== -->
-
-    <div id="studentStatsArea" class="stats-grid" style="display:none; justify-content:center;">
-
-        <div class="stat-card student-click" onclick="showTodayClasses()">
-            <div class="stat-number" id="todayClasses">0</div>
-            <div class="stat-label">Today's Classes</div>
+    <header class="m3-header">
+        <div>
+            <h1 class="app-title">📚 Smart College Timetable Manager</h1>
+            <div id="currentTime" class="subtext"></div>
         </div>
 
-        <div class="stat-card student-click" onclick="showWeeklySummary()">
-            <div class="stat-number" id="weeklySummaryCount">0</div>
-            <div class="stat-label">Total Weekly Classes</div>
+        <div class="header-right">
+            <span id="loggedUser" class="logged-user"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
+    </header>
 
+
+    <!-- ====================================================== -->
+    <!-- STUDENT NAV TABS (TODAY + WEEK) -->
+    <!-- ====================================================== -->
+    <div id="studentTabs" class="m3-tabs hidden">
+        <button class="tab active" onclick="showStudentToday()">TODAY</button>
+        <button class="tab" onclick="showStudentWeek()">WEEK</button>
     </div>
 
     <!-- ====================================================== -->
-    <!-- STUDENT DISPLAY AREA -->
+    <!-- TEACHER NAV TABS (TODAY + WEEK + EXTRA CLASS) -->
     <!-- ====================================================== -->
-    <div id="studentDisplayArea" class="card" style="display:none; margin-top:20px;">
-        <h2 id="studentDisplayTitle"></h2>
-        <div id="studentDisplayContent"></div>
+    <div id="teacherTabs" class="m3-tabs hidden">
+        <button class="tab active" onclick="showTeacherToday()">TODAY</button>
+        <button class="tab" onclick="showTeacherWeek()">WEEK</button>
+        <button class="tab" onclick="openExtraClass()">EXTRA CLASS</button>
     </div>
 
     <!-- ====================================================== -->
-    <!-- TEACHER + ADMIN ORIGINAL DASHBOARD -->
+    <!-- ADMIN NAV TABS (DASHBOARD + DATA) -->
     <!-- ====================================================== -->
+    <div id="adminTabs" class="m3-tabs hidden">
+        <button class="tab active" onclick="showAdminDashboard()">DASHBOARD</button>
+        <button class="tab" onclick="showAdminData()">DATA</button>
+    </div>
 
-    <div id="fullDashboard">
 
-        <!-- STATS FOR TEACHER/ADMIN -->
-        <div id="adminTeacherStats" class="stats-grid">
+    <!-- ====================================================== -->
+    <!-- STUDENT MAIN VIEW -->
+    <!-- ====================================================== -->
+    <div id="studentView" class="hidden">
 
-            <div class="stat-card">
-                <div class="stat-number" id="totalClasses">0</div>
-                <div class="stat-label">Total Classes</div>
+        <!-- Today Content -->
+        <div id="studentTodayArea" class="m3-card hidden">
+            <h2 class="section-title">Today’s Classes</h2>
+            <div id="studentTodayList"></div>
+        </div>
+
+        <!-- Weekly Content -->
+        <div id="studentWeekArea" class="m3-card hidden">
+            <h2 class="section-title">Total Classes This Week</h2>
+
+            <div id="weekDaysButtons" class="week-buttons"></div>
+
+            <div id="selectedDayArea" class="selected-day-card hidden">
+                <h3 id="selectedDayTitle"></h3>
+                <div id="selectedDayContent"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================== -->
+    <!-- TEACHER MAIN VIEW -->
+    <!-- ====================================================== -->
+    <div id="teacherView" class="hidden">
+
+        <!-- Today -->
+        <div id="teacherTodayArea" class="m3-card hidden">
+            <h2 class="section-title">Today’s Schedule</h2>
+            <div id="teacherTodayList"></div>
+        </div>
+
+        <!-- Week -->
+        <div id="teacherWeekArea" class="m3-card hidden">
+            <h2 class="section-title">This Week’s Classes</h2>
+
+            <div id="teacherWeekButtons" class="week-buttons"></div>
+
+            <div id="teacherSelectedDayArea" class="selected-day-card hidden">
+                <h3 id="teacherSelectedDayTitle"></h3>
+                <div id="teacherSelectedDayContent"></div>
+            </div>
+        </div>
+
+        <!-- Extra Class Form -->
+        <div id="extraClassArea" class="m3-card hidden">
+            <h2 class="section-title">Add Extra Class</h2>
+
+            <label class="label">Select Day (Future Only)</label>
+            <select id="extraClassDay" class="m3-input"></select>
+
+            <label class="label">Class Name</label>
+            <input id="extraClassName" class="m3-input" placeholder="e.g., Data Structures">
+
+            <label class="label">Start Time</label>
+            <input id="extraStartTime" class="m3-input" type="time">
+
+            <label class="label">End Time</label>
+            <input id="extraEndTime" class="m3-input" type="time">
+
+            <label class="label">Room</label>
+            <input id="extraRoom" class="m3-input">
+
+            <label class="label">Type</label>
+            <select id="extraType" class="m3-input">
+                <option>Lecture</option>
+                <option>Lab</option>
+                <option>Tutorial</option>
+                <option>Seminar</option>
+            </select>
+
+            <button class="m3-btn" onclick="saveExtraClass()">Add Extra Class</button>
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================== -->
+    <!-- ADMIN DASHBOARD -->
+    <!-- ====================================================== -->
+    <div id="adminDashboard" class="hidden">
+
+        <div class="dashboard-top">
+            <h2 class="section-title">Dashboard</h2>
+            <button class="m3-btn small" onclick="openModifyClasses()">Modify Classes</button>
+        </div>
+
+        <div class="admin-grid">
+
+            <div class="m3-card">
+                <h3>Classes Per Day</h3>
+                <div id="adminClassesChart"></div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-number" id="nextClass">--</div>
-                <div class="stat-label">Next Class Time</div>
+            <div class="m3-card">
+                <h3>Class Type Distribution</h3>
+                <div id="adminTypeChart"></div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-number" id="weeklyHours">0</div>
-                <div class="stat-label">Weekly Hours</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-number" id="completedTasks">0</div>
-                <div class="stat-label">Completed Tasks</div>
+            <div class="m3-card">
+                <h3>Upcoming Class</h3>
+                <div id="adminUpcoming"></div>
             </div>
 
         </div>
 
-        <!-- ====================================================== -->
-        <!-- TABS (ADMIN & TEACHER ONLY) -->
-        <!-- ====================================================== -->
-        <div class="tabs" id="tabsArea">
-            <button class="tab active" onclick="switchTab('schedule')">📅 Schedule</button>
-            <button class="tab" onclick="switchTab('calendar')">📆 Calendar</button>
-            <button class="tab" onclick="switchTab('analytics')">📊 Analytics</button>
-            <button class="tab" onclick="switchTab('tasks')">✅ Tasks</button>
-            <button class="tab" onclick="switchTab('notes')">📝 Notes</button>
-        </div>
+    </div>
 
-        <!-- ====================================================== -->
-        <!-- SCHEDULE TAB -->
-        <!-- ====================================================== -->
+    <!-- ====================================================== -->
+    <!-- ADMIN DATA PAGE -->
+    <!-- ====================================================== -->
+    <div id="adminData" class="hidden m3-card" style="margin-top:20px;">
+        <h2 class="section-title">Data Management</h2>
 
-        <div id="scheduleTab" class="tab-content active">
-            <div class="main-grid">
+        <button class="m3-btn" onclick="exportData()">Export Data</button>
+        <button class="m3-btn" onclick="importData()">Import Data</button>
+        <button class="m3-btn danger" onclick="clearAllData()">Reset All</button>
+    </div>
 
-                <!-- ADD CLASS (ADMIN ONLY) -->
-                <div class="card" id="addClassCard">
-                    <h2>➕ Add New Class</h2>
 
-                    <form id="classForm">
-                        <div class="form-group">
-                            <label>Class Name *</label>
-                            <input type="text" id="className" required>
-                        </div>
+</div> <!-- END APP -->
 
-                        <div class="form-group">
-                            <label>Day *</label>
-                            <select id="classDay" required>
-                                <option value="">Select Day</option>
-                                <option>Monday</option>
-                                <option>Tuesday</option>
-                                <option>Wednesday</option>
-                                <option>Thursday</option>
-                                <option>Friday</option>
-                                <option>Saturday</option>
-                            </select>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Start Time *</label>
-                            <input type="time" id="startTime" required>
-                        </div>
+<!-- ====================================================== -->
+<!-- MODIFY CLASSES POPUP (ADMIN ONLY) -->
+<!-- ====================================================== -->
+<div id="modifyPopup" class="popup hidden">
+    <div class="popup-content m3-card">
 
-                        <div class="form-group">
-                            <label>End Time *</label>
-                            <input type="time" id="endTime" required>
-                        </div>
+        <h2>Edit / Add / Delete Classes</h2>
 
-                        <div class="form-group">
-                            <label>Teacher Name</label>
-                            <input type="text" id="teacherName">
-                        </div>
+        <div id="modifyList"></div>
 
-                        <div class="form-group">
-                            <label>Room Number</label>
-                            <input type="text" id="roomNumber">
-                        </div>
+        <button class="m3-btn small" onclick="openAddClassModal()">Add New Class</button>
+        <button class="m3-btn secondary small" onclick="closeModifyClasses()">Close</button>
+    </div>
+</div>
 
-                        <div class="form-group">
-                            <label>Class Type</label>
-                            <select id="classType">
-                                <option>Lecture</option>
-                                <option>Lab</option>
-                                <option>Tutorial</option>
-                                <option>Seminar</option>
-                            </select>
-                        </div>
 
-                        <button type="submit">Add Class</button>
-                    </form>
-                </div>
+<!-- ====================================================== -->
+<!-- ADD CLASS POPUP -->
+<!-- ====================================================== -->
+<div id="addClassPopup" class="popup hidden">
+    <div class="popup-content m3-card">
 
-                <!-- WEEKLY SCHEDULE -->
-                <div class="card">
-                    <h2>📋 Weekly Schedule</h2>
-                    <div style="display:flex; gap:6px; margin-bottom:15px; flex-wrap:wrap;">
-                        <button class="btn-small" onclick="filterClasses('all')">All</button>
-                        <button class="btn-small" onclick="filterClasses('Monday')">Mon</button>
-                        <button class="btn-small" onclick="filterClasses('Tuesday')">Tue</button>
-                        <button class="btn-small" onclick="filterClasses('Wednesday')">Wed</button>
-                        <button class="btn-small" onclick="filterClasses('Thursday')">Thu</button>
-                        <button class="btn-small" onclick="filterClasses('Friday')">Fri</button>
-                        <button class="btn-small" onclick="filterClasses('Saturday')">Sat</button>
-                    </div>
+        <h2>Add Class</h2>
 
-                    <div id="classList" class="scroll-box"></div>
-                </div>
+        <input id="newClassName" class="m3-input" placeholder="Class Name">
+        <select id="newClassDay" class="m3-input">
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+        </select>
 
-            </div>
-        </div>
-        <!-- ====================================================== -->
-        <!-- CALENDAR TAB -->
-        <!-- ====================================================== -->
+        <input id="newStart" class="m3-input" type="time">
+        <input id="newEnd" class="m3-input" type="time">
+        <input id="newTeacher" class="m3-input" placeholder="Teacher Name">
+        <input id="newRoom" class="m3-input" placeholder="Room">
+        <select id="newType" class="m3-input">
+            <option>Lecture</option>
+            <option>Lab</option>
+            <option>Tutorial</option>
+            <option>Seminar</option>
+        </select>
 
-        <div id="calendarTab" class="tab-content">
-            <div class="card">
-                <h2>📆 Weekly Calendar Overview</h2>
-                <div id="calendarGrid" class="calendar-grid"></div>
-            </div>
-        </div>
+        <button class="m3-btn small" onclick="saveNewClass()">Save</button>
+        <button class="m3-btn secondary small" onclick="closeAddClassModal()">Cancel</button>
+    </div>
+</div>
 
-        <!-- ====================================================== -->
-        <!-- ANALYTICS TAB -->
-        <!-- ====================================================== -->
-
-        <div id="analyticsTab" class="tab-content">
-            <div class="main-grid">
-
-                <div class="card">
-                    <h2>📊 Classes per Day</h2>
-                    <div class="chart-container">
-                        <div class="bar-chart" id="barChart"></div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2>📈 Study Statistics</h2>
-                    <div id="studyStats"></div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TASKS TAB -->
-        <!-- ====================================================== -->
-
-        <div id="tasksTab" class="tab-content">
-            <div class="main-grid">
-
-                <div class="card">
-                    <h2>➕ Add Task</h2>
-
-                    <form id="taskForm">
-                        <div class="form-group">
-                            <label>Task Title *</label>
-                            <input type="text" id="taskTitle">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Subject</label>
-                            <input type="text" id="taskSubject">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Due Date</label>
-                            <input type="date" id="taskDate">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Priority</label>
-                            <select id="taskPriority">
-                                <option>Low</option>
-                                <option>Medium</option>
-                                <option>High</option>
-                            </select>
-                        </div>
-
-                        <button type="submit">Add Task</button>
-                    </form>
-                </div>
-
-                <div class="card">
-                    <h2>📋 Your Tasks</h2>
-                    <div id="tasksList"></div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- NOTES TAB -->
-        <!-- ====================================================== -->
-
-        <div id="notesTab" class="tab-content">
-            <div class="card">
-                <h2>📝 Quick Notes</h2>
-                <textarea id="notesArea" rows="15" placeholder="Write your notes here..."></textarea>
-                <button onclick="saveNotes()">💾 Save Notes</button>
-            </div>
-        </div>
-
-    </div> <!-- END fullDashboard -->
-
-</div> <!-- END app -->
 
 <!-- ====================================================== -->
 <!-- NOTIFICATION POPUP -->
 <!-- ====================================================== -->
 <div id="notification" class="notification"></div>
 
-<!-- ====================================================== -->
-<!-- LINK JS FILE -->
-<!-- ====================================================== -->
+<!-- Link JavaScript -->
 <script src="script.js"></script>
 
 </body>
