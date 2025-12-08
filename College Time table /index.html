@@ -10,6 +10,7 @@
 
 </head>
 <body>
+    
     <!-- LOGIN PAGE -->
     <div id="loginPage" class="login-container">
         <div class="login-box">
@@ -54,6 +55,19 @@
                     <label>Password</label>
                     <input type="password" id="registerPassword" placeholder="Create a password">
                 </div>
+
+                <!-- STUDENT BATCH SELECTION -->
+                <div class="form-group" id="batchSelectRegister">
+                    <label>Select Batch</label>
+                    <select id="registerBatch">
+                        <option value="">Select Batch</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+
                 <button class="btn-primary" onclick="handleRegister()">Register</button>
                 <div class="toggle-form">
                     Already have an account? <a onclick="toggleForms()">Login here</a>
@@ -116,6 +130,19 @@
 
         <!-- TEACHER UI -->
         <div id="teacherUI" style="display: none;">
+
+            <!-- TEACHER BATCH SELECTION -->
+            <div id="teacherBatchSelect" class="batch-selection-container">
+                <div class="batch-card" onclick="selectTeacherBatch('2022')">Batch 2022</div>
+                <div class="batch-card" onclick="selectTeacherBatch('2023')">Batch 2023</div>
+                <div class="batch-card" onclick="selectTeacherBatch('2024')">Batch 2024</div>
+                <div class="batch-card" onclick="selectTeacherBatch('2025')">Batch 2025</div>
+            </div>
+
+            <!-- SELECTED BATCH HEADER -->
+            <h2 id="teacherBatchHeader" class="selected-batch-title" style="display:none;"></h2>
+            <button id="changeBatchBtn" class="secondary-btn" style="display:none;" onclick="changeTeacherBatch()">Change Batch</button>
+
             <div class="tabs">
                 <button class="tab active" onclick="switchTeacherTab('today')">📅 TODAY</button>
                 <button class="tab" onclick="switchTeacherTab('week')">📆 WEEK</button>
@@ -186,6 +213,16 @@
 
         <!-- ADMIN UI -->
         <div id="adminUI" style="display: none;">
+
+            <!-- ADMIN BATCH FILTER -->
+            <div id="adminBatchSelect" class="batch-selection-container">
+                <div class="batch-card" onclick="selectAdminBatch('2022')">2022</div>
+                <div class="batch-card" onclick="selectAdminBatch('2023')">2023</div>
+                <div class="batch-card" onclick="selectAdminBatch('2024')">2024</div>
+                <div class="batch-card" onclick="selectAdminBatch('2025')">2025</div>
+                <div class="batch-card" onclick="selectAdminBatch(null)">Show All</div>
+            </div>
+
             <div class="tabs">
                 <button class="tab active" onclick="switchAdminTab('dashboard')">📊 DASHBOARD</button>
                 <button class="tab" onclick="switchAdminTab('data')">💾 DATA</button>
