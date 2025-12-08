@@ -1,0 +1,547 @@
+/* RESET + GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef1f7;
+    min-height: 100vh;
+}
+
+/* ============================
+   LOGIN CARD
+============================ */
+.center-box {
+    max-width: 400px;
+    margin: 80px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    text-align: center;
+    animation: fadeIn 0.4s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 0;
+    background: #667eea;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn:hover { background: #5568d3; }
+
+.hidden { display: none; }
+
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+/* ============================
+   HEADER
+============================ */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+}
+
+.current-time {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #666;
+}
+
+.btn-header {
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    background: #667eea;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: 0.3s ease;
+}
+.btn-header:hover {
+    background: #5568d3;
+}
+
+/* ============================
+   STATS GRID
+============================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    cursor: default;
+}
+
+.student-click {
+    cursor: pointer !important;
+    transition: 0.3s ease;
+}
+.student-click:hover {
+    transform: translateY(-4px);
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #444;
+}
+
+.stat-label {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* ============================
+   CARD (COMMON BOX)
+============================ */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+}
+
+/* Scroll area */
+.scroll-box {
+    max-height: 550px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* ============================
+   WEEKLY SCHEDULE ITEMS
+============================ */
+.class-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border-left: 5px solid #667eea;
+    animation: fadeIn 0.3s;
+}
+
+.class-item.today {
+    background: #eef0ff;
+    border-left: 6px solid #4c57d0;
+}
+
+.class-time {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.class-name {
+    margin: 5px 0;
+    font-weight: 600;
+}
+
+.class-details {
+    font-size: 13px;
+    color: #666;
+}
+
+.class-actions {
+    float: right;
+    margin-top: -5px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    border: none;
+    background: #667eea;
+    color: white;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.btn-delete { background: #e84a4a !important; }
+.btn-edit   { background: #4caf50 !important; }
+/* ============================
+   TABS
+============================ */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 20px 10px 20px;
+}
+
+.tab {
+    padding: 10px 18px;
+    background: #ddd;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #444;
+    transition: 0.25s;
+}
+.tab:hover {
+    background: #cfcfcf;
+}
+.tab.active {
+    background: #667eea;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* ============================
+   CALENDAR GRID
+============================ */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    padding-top: 10px;
+}
+
+.calendar-day {
+    background: #f8f8ff;
+    border: 1px solid #d6d6ff;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.calendar-day-name {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.calendar-class-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: #5568d3;
+}
+
+/* ============================
+   ANALYTICS
+============================ */
+.chart-container {
+    width: 100%;
+    height: 260px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    height: 100%;
+}
+
+.bar {
+    width: 35px;
+    background: #667eea;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+}
+
+.bar-value {
+    position: absolute;
+    top: -24px;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+}
+
+.bar-label {
+    position: absolute;
+    bottom: -23px;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+}
+
+/* ============================
+   TASKS
+============================ */
+.task-item {
+    background: #f4f4ff;
+    border-left: 5px solid #667eea;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-item.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+#tasksList input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================
+   NOTES
+============================ */
+#notesArea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+/* ============================
+   ALERT BOX
+============================ */
+.alert-box {
+    background: #fff7d1;
+    padding: 15px;
+    border-left: 5px solid #e2c000;
+    margin: 20px;
+    border-radius: 10px;
+    display: none;
+    animation: fadeIn 0.4s;
+}
+.alert-box.show {
+    display: block;
+}
+
+/* ============================
+   NOTIFICATION POPUP
+============================ */
+.notification {
+    position: fixed;
+    bottom: 30px;
+    right: -300px;
+    background: #333;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.4s ease-out;
+}
+.notification.show {
+    right: 30px;
+}
+
+/* ============================
+   FORM
+============================ */
+form label {
+    font-size: 14px;
+    color: #333;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    margin: 8px 0 12px;
+    font-size: 15px;
+}
+
+form button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #667eea;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+form button[type="submit"]:hover {
+    background: #5568d3;
+}
+
+/* ============================
+   STUDENT UI OVERRIDES
+============================ */
+
+.student-only-hide {
+    display: none !important;
+}
+
+#studentStatsArea {
+    margin-top: 10px;
+}
+
+#studentDisplayArea {
+    margin: 20px;
+}
+
+#studentDisplayArea h2 {
+    margin-bottom: 15px;
+}
+
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.student-table th,
+.student-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+.student-table th {
+    background: #667eea;
+    color: white;
+}
+
+.student-table tr:nth-child(even) {
+    background: #f3f3ff;
+}
+
+.student-table tr:hover {
+    background: #ececfc;
+}
+/* ============================
+   RESPONSIVE DESIGN
+============================ */
+
+@media (max-width: 1000px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .header-actions {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .center-box {
+        margin: 40px 20px;
+        padding: 25px;
+    }
+
+    .tab {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .stat-number {
+        font-size: 22px;
+    }
+}
+
+/* ============================
+   UTILITY CLASSES
+============================ */
+
+.mt-10 { margin-top: 10px; }
+.mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
+.text-center { text-align: center; }
+
+/* ============================
+   DISABLED UI FOR STUDENT
+============================ */
+
+.student-hidden {
+    display: none !important;
+}
+
+.student-readonly {
+    pointer-events: none !important;
+    opacity: 0.7;
+}
+
+/* ============================
+   END OF FILE
+============================ */

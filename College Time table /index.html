@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart College Timetable Manager</title>
+
+<!-- Link External CSS -->
+<link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+
+<!-- ====================================================== -->
+<!-- LOGIN SELECTION SCREEN -->
+<!-- ====================================================== -->
+<div id="loginScreen" class="center-box">
+    <h2>Select Your Role</h2>
+    <button class="btn" onclick="openStudentReg()">Student Login</button>
+    <button class="btn" onclick="openTeacherReg()">Teacher Login</button>
+    <button class="btn" onclick="adminDirectLogin()">Admin Login</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- STUDENT REGISTER -->
+<!-- ====================================================== -->
+<div id="studentReg" class="center-box hidden">
+    <h2>Student Registration</h2>
+    <input id="stuName" class="input" placeholder="Your Name" />
+    <input id="stuEmail" class="input" placeholder="Email" />
+    <button class="btn" onclick="registerStudent()">Register</button>
+    <p style="margin-top:15px;">Already registered?</p>
+    <button class="btn" onclick="openStudentLogin()">Login</button>
+</div>
+
+<!-- STUDENT LOGIN -->
+<div id="studentLogin" class="center-box hidden">
+    <h2>Student Login</h2>
+    <input id="stuEmailLogin" class="input" placeholder="Email" />
+    <button class="btn" onclick="studentLoginNow()">Login</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- TEACHER REGISTER -->
+<!-- ====================================================== -->
+<div id="teacherReg" class="center-box hidden">
+    <h2>Teacher Registration</h2>
+    <input id="teachName" class="input" placeholder="Your Name" />
+    <input id="teachEmail" class="input" placeholder="Email" />
+    <button class="btn" onclick="registerTeacher()">Register</button>
+    <p style="margin-top:15px;">Already registered?</p>
+    <button class="btn" onclick="openTeacherLogin()">Login</button>
+</div>
+
+<!-- TEACHER LOGIN -->
+<div id="teacherLogin" class="center-box hidden">
+    <h2>Teacher Login</h2>
+    <input id="teachEmailLogin" class="input" placeholder="Email" />
+    <button class="btn" onclick="teacherLoginNow()">Login</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- ADMIN LOGIN -->
+<!-- ====================================================== -->
+<div id="adminLogin" class="center-box hidden">
+    <h2>Admin Login</h2>
+    <input id="adminEmail" class="input" placeholder="Admin Email" />
+    <input id="adminPass" type="password" class="input" placeholder="Password" />
+    <button class="btn" onclick="adminLoginNow()">Login</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- MAIN APPLICATION -->
+<!-- ====================================================== -->
+<div id="app" style="display:none;">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <h1>📚 Smart College Timetable Manager</h1>
+            <div id="currentTime" class="current-time"></div>
+            <div id="loggedUser" style="color:#444; font-size:14px; margin-top:4px;"></div>
+        </div>
+
+        <div class="header-actions" id="adminButtons">
+            <button class="btn-header" onclick="exportData()">📥 Export Data</button>
+            <button class="btn-header" onclick="importData()">📤 Import Data</button>
+            <button class="btn-header" onclick="clearAllData()">🗑️ Clear All</button>
+            <button class="btn-header" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- ALERT BOX -->
+    <div class="alert-box" id="alertBox">
+        <strong>⏰ Upcoming Class Alert!</strong>
+        <div id="alertMessage"></div>
+    </div>
+    <!-- ====================================================== -->
+    <!-- STUDENT DASHBOARD STAT CARDS (Custom Student UI) -->
+    <!-- ====================================================== -->
+
+    <div id="studentStatsArea" class="stats-grid" style="display:none; justify-content:center;">
+
+        <div class="stat-card student-click" onclick="showTodayClasses()">
+            <div class="stat-number" id="todayClasses">0</div>
+            <div class="stat-label">Today's Classes</div>
+        </div>
+
+        <div class="stat-card student-click" onclick="showWeeklySummary()">
+            <div class="stat-number" id="weeklySummaryCount">0</div>
+            <div class="stat-label">Total Weekly Classes</div>
+        </div>
+
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- STUDENT DISPLAY AREA -->
+    <!-- ====================================================== -->
+    <div id="studentDisplayArea" class="card" style="display:none; margin-top:20px;">
+        <h2 id="studentDisplayTitle"></h2>
+        <div id="studentDisplayContent"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TEACHER + ADMIN ORIGINAL DASHBOARD -->
+    <!-- ====================================================== -->
+
+    <div id="fullDashboard">
+
+        <!-- STATS FOR TEACHER/ADMIN -->
+        <div id="adminTeacherStats" class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-number" id="totalClasses">0</div>
+                <div class="stat-label">Total Classes</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number" id="nextClass">--</div>
+                <div class="stat-label">Next Class Time</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number" id="weeklyHours">0</div>
+                <div class="stat-label">Weekly Hours</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completed Tasks</div>
+            </div>
+
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- TABS (ADMIN & TEACHER ONLY) -->
+        <!-- ====================================================== -->
+        <div class="tabs" id="tabsArea">
+            <button class="tab active" onclick="switchTab('schedule')">📅 Schedule</button>
+            <button class="tab" onclick="switchTab('calendar')">📆 Calendar</button>
+            <button class="tab" onclick="switchTab('analytics')">📊 Analytics</button>
+            <button class="tab" onclick="switchTab('tasks')">✅ Tasks</button>
+            <button class="tab" onclick="switchTab('notes')">📝 Notes</button>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- SCHEDULE TAB -->
+        <!-- ====================================================== -->
+
+        <div id="scheduleTab" class="tab-content active">
+            <div class="main-grid">
+
+                <!-- ADD CLASS (ADMIN ONLY) -->
+                <div class="card" id="addClassCard">
+                    <h2>➕ Add New Class</h2>
+
+                    <form id="classForm">
+                        <div class="form-group">
+                            <label>Class Name *</label>
+                            <input type="text" id="className" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Day *</label>
+                            <select id="classDay" required>
+                                <option value="">Select Day</option>
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Start Time *</label>
+                            <input type="time" id="startTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>End Time *</label>
+                            <input type="time" id="endTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teacher Name</label>
+                            <input type="text" id="teacherName">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Room Number</label>
+                            <input type="text" id="roomNumber">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Class Type</label>
+                            <select id="classType">
+                                <option>Lecture</option>
+                                <option>Lab</option>
+                                <option>Tutorial</option>
+                                <option>Seminar</option>
+                            </select>
+                        </div>
+
+                        <button type="submit">Add Class</button>
+                    </form>
+                </div>
+
+                <!-- WEEKLY SCHEDULE -->
+                <div class="card">
+                    <h2>📋 Weekly Schedule</h2>
+                    <div style="display:flex; gap:6px; margin-bottom:15px; flex-wrap:wrap;">
+                        <button class="btn-small" onclick="filterClasses('all')">All</button>
+                        <button class="btn-small" onclick="filterClasses('Monday')">Mon</button>
+                        <button class="btn-small" onclick="filterClasses('Tuesday')">Tue</button>
+                        <button class="btn-small" onclick="filterClasses('Wednesday')">Wed</button>
+                        <button class="btn-small" onclick="filterClasses('Thursday')">Thu</button>
+                        <button class="btn-small" onclick="filterClasses('Friday')">Fri</button>
+                        <button class="btn-small" onclick="filterClasses('Saturday')">Sat</button>
+                    </div>
+
+                    <div id="classList" class="scroll-box"></div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ====================================================== -->
+        <!-- CALENDAR TAB -->
+        <!-- ====================================================== -->
+
+        <div id="calendarTab" class="tab-content">
+            <div class="card">
+                <h2>📆 Weekly Calendar Overview</h2>
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- ANALYTICS TAB -->
+        <!-- ====================================================== -->
+
+        <div id="analyticsTab" class="tab-content">
+            <div class="main-grid">
+
+                <div class="card">
+                    <h2>📊 Classes per Day</h2>
+                    <div class="chart-container">
+                        <div class="bar-chart" id="barChart"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📈 Study Statistics</h2>
+                    <div id="studyStats"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- TASKS TAB -->
+        <!-- ====================================================== -->
+
+        <div id="tasksTab" class="tab-content">
+            <div class="main-grid">
+
+                <div class="card">
+                    <h2>➕ Add Task</h2>
+
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label>Task Title *</label>
+                            <input type="text" id="taskTitle">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" id="taskSubject">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="taskDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select id="taskPriority">
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+
+                        <button type="submit">Add Task</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>📋 Your Tasks</h2>
+                    <div id="tasksList"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- NOTES TAB -->
+        <!-- ====================================================== -->
+
+        <div id="notesTab" class="tab-content">
+            <div class="card">
+                <h2>📝 Quick Notes</h2>
+                <textarea id="notesArea" rows="15" placeholder="Write your notes here..."></textarea>
+                <button onclick="saveNotes()">💾 Save Notes</button>
+            </div>
+        </div>
+
+    </div> <!-- END fullDashboard -->
+
+</div> <!-- END app -->
+
+<!-- ====================================================== -->
+<!-- NOTIFICATION POPUP -->
+<!-- ====================================================== -->
+<div id="notification" class="notification"></div>
+
+<!-- ====================================================== -->
+<!-- LINK JS FILE -->
+<!-- ====================================================== -->
+<script src="script.js"></script>
+
+</body>
+</html>
