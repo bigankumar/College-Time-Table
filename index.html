@@ -10,7 +10,6 @@
 
 <body>
 
-    <!-- LOGIN PAGE -->
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <div class="login-header">
@@ -24,7 +23,6 @@
                 <button class="role-btn" onclick="selectRole('admin')">👨‍💼 Admin</button>
             </div>
 
-            <!-- Login Form -->
             <div id="loginForm">
                 <div class="form-group">
                     <label>Email</label>
@@ -40,7 +38,6 @@
                 </div>
             </div>
 
-            <!-- Register Form -->
             <div id="registerForm" style="display: none;">
                 <div class="form-group">
                     <label>Full Name</label>
@@ -54,8 +51,6 @@
                     <label>Password</label>
                     <input type="password" id="registerPassword" placeholder="Create a password">
                 </div>
-
-                <!-- STUDENT BATCH SELECTION (Only for Students) -->
                 <div class="form-group" id="batchSelectRegister" style="display: none;">
                     <label>Select Batch</label>
                     <select id="registerBatch">
@@ -66,7 +61,6 @@
                         <option value="2025">2025</option>
                     </select>
                 </div>
-
                 <button class="btn-primary" onclick="handleRegister()">Register</button>
                 <div class="toggle-form">
                     Already have an account? <a onclick="toggleForms()">Login here</a>
@@ -75,9 +69,7 @@
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div id="appContainer" class="app-container">
-        <!-- Header -->
         <div class="app-header">
             <div>
                 <h1>📚 Smart Timetable Manager</h1>
@@ -89,16 +81,13 @@
             </div>
         </div>
 
-        <!-- Current Time -->
         <div class="current-time" id="currentTime"></div>
 
-        <!-- Alert Box -->
         <div class="alert-box" id="alertBox">
             <strong>⏰ Upcoming Class Alert!</strong>
             <div id="alertMessage"></div>
         </div>
 
-        <!-- STUDENT UI -->
         <div id="studentUI" style="display: none;">
             <div class="tabs">
                 <button class="tab active" onclick="switchStudentTab('today')">📅 TODAY</button>
@@ -127,10 +116,7 @@
             </div>
         </div>
 
-        <!-- TEACHER UI -->
         <div id="teacherUI" style="display: none;">
-
-            <!-- TEACHER BATCH SELECTION -->
             <div id="teacherBatchSelect" class="batch-selection-container">
                 <div class="batch-card" onclick="selectTeacherBatch('2022')">Batch 2022</div>
                 <div class="batch-card" onclick="selectTeacherBatch('2023')">Batch 2023</div>
@@ -138,7 +124,6 @@
                 <div class="batch-card" onclick="selectTeacherBatch('2025')">Batch 2025</div>
             </div>
 
-            <!-- SELECTED BATCH HEADER -->
             <h2 id="teacherBatchHeader" class="selected-batch-title" style="display:none;"></h2>
             <button id="changeBatchBtn" class="secondary-btn" style="display:none;" onclick="changeTeacherBatch()">Change Batch</button>
 
@@ -150,7 +135,7 @@
 
             <div id="teacherTodayTab" class="tab-content active">
                 <div class="card">
-                    <h2>Today's Classes</h2>
+                    <h2>Today's Classes (All Batches)</h2>
                     <div id="teacherTodayList"></div>
                 </div>
             </div>
@@ -210,10 +195,7 @@
             </div>
         </div>
 
-        <!-- ADMIN UI -->
         <div id="adminUI" style="display: none;">
-
-            <!-- ADMIN BATCH FILTER -->
             <div id="adminBatchSelect" class="batch-selection-container">
                 <div class="batch-card" onclick="selectAdminBatch('2022')">2022</div>
                 <div class="batch-card" onclick="selectAdminBatch('2023')">2023</div>
@@ -236,6 +218,10 @@
                     <div class="stat-card">
                         <div class="stat-number" id="todayClasses">0</div>
                         <div class="stat-label">Today's Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="cancelledClasses">0</div>
+                        <div class="stat-label">Cancelled Classes</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="nextClass">--</div>
@@ -265,7 +251,6 @@
         </div>
     </div>
 
-    <!-- Modify Classes Modal -->
     <div id="modifyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -302,7 +287,12 @@
                     <input type="time" id="newClassEnd">
                 </div>
                 <div class="form-group">
-                    <label>Teacher</label>
+                    <label>Teacher Email</label>
+                    <input type="email" id="newClassTeacherEmail" placeholder="teacher@college.edu">
+                    <small>Leave empty to auto-generate from teacher name</small>
+                </div>
+                <div class="form-group">
+                    <label>Teacher Name</label>
                     <input type="text" id="newClassTeacher">
                 </div>
                 <div class="form-group">
@@ -325,7 +315,6 @@
         </div>
     </div>
 
-    <!-- Notification -->
     <div id="notification" class="notification"></div>
 
     <!-- External JS -->

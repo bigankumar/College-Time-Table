@@ -1,12 +1,10 @@
-// GLOBAL DATA
-        let classes = [];
+let classes = [];
         let currentUser = null;
         let currentRole = "student";
         let selectedRole = "student";
         let teacherSelectedBatch = null;
         let adminSelectedBatch = null;
 
-        // 12-HOUR TIME FORMATTER
         function to12Hour(t) {
             let [h, m] = t.split(":").map(Number);
             let ampm = h >= 12 ? "PM" : "AM";
@@ -15,7 +13,6 @@
             return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")} ${ampm}`;
         }
 
-        // INIT
         function init() {
             loadUsers();
             loadClasses();
@@ -24,25 +21,27 @@
             setInterval(checkUpcomingClasses, 20000);
         }
 
-        // USERS
         function loadUsers() {
             if (!localStorage.getItem("users_v3")) {
                 localStorage.setItem("users_v3", JSON.stringify([]));
             }
         }
 
-        // CLASSES STORAGE
         function loadClasses() {
             const saved = localStorage.getItem("classes_v3");
             if (saved) {
                 let arr = JSON.parse(saved);
                 classes = arr.filter(c => {
-                    if (!c.batch) {
-                        showNotification("⚠ Missing batch field — class skipped");
-                        return false;
+                    if (!c.batch) return false;
+                    if (c.isCancelled === undefined) c.isCancelled = false;
+                    if (!c.cancelReason) c.cancelReason = "";
+                    if (!c.cancelTime) c.cancelTime = "";
+                    if (!c.teacherEmail && c.teacher) {
+                        c.teacherEmail = c.teacher.toLowerCase().replace(/\s+/g, '') + "@college.edu";
                     }
                     return true;
                 });
+                saveClasses();
             }
         }
 
@@ -50,7 +49,6 @@
             localStorage.setItem("classes_v3", JSON.stringify(classes));
         }
 
-        // CLOCK
         function updateTime() {
             const now = new Date();
             document.getElementById("currentTime").textContent = now.toLocaleString("en-US", {
@@ -63,22 +61,17 @@
             });
         }
 
-        // LOGIN / REGISTER
         function selectRole(r) {
             selectedRole = r;
-            
-            // Highlight active button
             document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
             event.target.classList.add("active");
 
-            // Batch dropdown visibility
             if (r === "teacher" || r === "admin") {
-                document.getElementById("batchSelectRegister").style.display = "none";  // Hide for teacher/admin
+                document.getElementById("batchSelectRegister").style.display = "none";
             } else {
-                document.getElementById("batchSelectRegister").style.display = "block"; // Show only for student
+                document.getElementById("batchSelectRegister").style.display = "block";
             }
 
-            // Admin cannot register
             if (r === "admin") {
                 document.getElementById("registerForm").style.display = "none";
                 document.getElementById("loginForm").style.display = "block";
@@ -113,16 +106,12 @@
                 return;
             }
 
-            // Student must select batch
             if (selectedRole === "student" && !batch) {
                 showNotification("Please select your batch");
                 return;
             }
 
-            // Teacher should NOT have batch
-            if (selectedRole === "teacher") {
-                batch = null;
-            }
+            if (selectedRole === "teacher") batch = null;
 
             let users = JSON.parse(localStorage.getItem("users_v3"));
 
@@ -132,10 +121,7 @@
             }
 
             users.push({
-                name,
-                email,
-                password: pass,
-                role: selectedRole,
+                name, email, password: pass, role: selectedRole,
                 batch: selectedRole === "student" ? batch : null
             });
 
@@ -174,7 +160,6 @@
             location.reload();
         }
 
-        // APP LOADER
         function loadApp() {
             document.getElementById("loginPage").style.display = "none";
             document.getElementById("appContainer").classList.add("show");
@@ -196,6 +181,7 @@
                 document.getElementById("teacherBatchSelect").style.display = "grid";
                 document.getElementById("teacherBatchHeader").style.display = "none";
                 document.getElementById("changeBatchBtn").style.display = "none";
+                renderTeacherTodayAll();
             }
 
             if (currentRole === "admin") {
@@ -206,7 +192,6 @@
             checkUpcomingClasses();
         }
 
-        // STUDENT FUNCTIONS
         function switchStudentTab(tab) {
             document.querySelectorAll("#studentUI .tab").forEach(t => t.classList.remove("active"));
             document.querySelectorAll("#studentUI .tab-content").forEach(c => c.classList.remove("active"));
@@ -235,13 +220,21 @@
                 return;
             }
 
-            box.innerHTML = arr.map(c => `
-                <div class="class-item ${c.extra ? "extra" : ""}">
-                    <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
-                    <div class="class-name">${c.name} ${c.extra ? "⭐ EXTRA" : ""}</div>
-                    <div class="class-details">👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}</div>
-                </div>
-            `).join("");
+            box.innerHTML = arr.map(c => {
+                const cancelledClass = c.isCancelled ? 'cancelled' : '';
+                const extraClass = c.extra && !c.isCancelled ? 'extra' : '';
+                return `
+                    <div class="class-item ${cancelledClass} ${extraClass}">
+                        ${c.isCancelled ? '<div class="cancel-badge">❌ CLASS CANCELLED</div>' : ''}
+                        <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
+                        <div class="class-name">${c.name} ${c.extra && !c.isCancelled ? "⭐ EXTRA" : ""}</div>
+                        <div class="class-details">
+                            👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}
+                            ${c.isCancelled ? `<br><em style="color: #ff6b6b;">${c.cancelReason}</em>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join("");
         }
 
         function renderStudentWeek() {
@@ -273,65 +266,28 @@
             if (dayClasses.length === 0) {
                 container.innerHTML = '<div class="empty-state">📭 No classes scheduled on this day.</div>';
             } else {
-                container.innerHTML = dayClasses.map(c => `
-                    <div class="class-item ${c.extra ? 'extra' : ''}">
-                        <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
-                        <div class="class-name">${c.name} ${c.extra ? '⭐ EXTRA' : ''}</div>
-                        <div class="class-details">👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = dayClasses.map(c => {
+                    const cancelledClass = c.isCancelled ? 'cancelled' : '';
+                    const extraClass = c.extra && !c.isCancelled ? 'extra' : '';
+                    return `
+                        <div class="class-item ${cancelledClass} ${extraClass}">
+                            ${c.isCancelled ? '<div class="cancel-badge">❌ CLASS CANCELLED</div>' : ''}
+                            <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
+                            <div class="class-name">${c.name} ${c.extra && !c.isCancelled ? '⭐ EXTRA' : ''}</div>
+                            <div class="class-details">
+                                👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}
+                                ${c.isCancelled ? `<br><em style="color: #ff6b6b;">${c.cancelReason}</em>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
         }
 
-        // TEACHER FUNCTIONS
-        function selectTeacherBatch(batch) {
-            teacherSelectedBatch = batch;
-            document.getElementById("teacherBatchSelect").style.display = "none";
-            document.getElementById("teacherBatchHeader").style.display = "block";
-            document.getElementById("teacherBatchHeader").textContent = "Batch - " + batch;
-            document.getElementById("changeBatchBtn").style.display = "inline-block";
-            renderTeacherToday();
-        }
-
-        function changeTeacherBatch() {
-            teacherSelectedBatch = null;
-            document.getElementById("teacherBatchSelect").style.display = "grid";
-            document.getElementById("teacherBatchHeader").style.display = "none";
-            document.getElementById("changeBatchBtn").style.display = "none";
-            document.getElementById("teacherTodayList").innerHTML = "";
-            document.getElementById("teacherDayList").innerHTML = "";
-        }
-
-        function teacherFiltered() {
-            if (!teacherSelectedBatch) return [];
-            return classes.filter(c => c.batch === teacherSelectedBatch);
-        }
-
-        function switchTeacherTab(tab) {
-            if (!teacherSelectedBatch) {
-                showNotification("⚠ Please select a batch first!");
-                return;
-            }
-
-            document.querySelectorAll("#teacherUI .tab").forEach(t => t.classList.remove("active"));
-            document.querySelectorAll("#teacherUI .tab-content").forEach(c => c.classList.remove("active"));
-            event.target.classList.add("active");
-
-            if (tab === "today") {
-                document.getElementById("teacherTodayTab").classList.add("active");
-                renderTeacherToday();
-            } else if (tab === "week") {
-                document.getElementById("teacherWeekTab").classList.add("active");
-            } else {
-                document.getElementById("teacherExtraTab").classList.add("active");
-                populateExtraDays();
-            }
-        }
-
-        function renderTeacherToday() {
-            if (!teacherSelectedBatch) return;
+        function renderTeacherTodayAll() {
             const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-            let arr = teacherFiltered().filter(c => c.day === today).sort((a, b) => a.start.localeCompare(b.start));
+            let arr = classes.filter(c => c.teacherEmail === currentUser.email && c.day === today).sort((a, b) => a.start.localeCompare(b.start));
+            
             let box = document.getElementById("teacherTodayList");
 
             if (arr.length === 0) {
@@ -339,13 +295,68 @@
                 return;
             }
 
-            box.innerHTML = arr.map(c => `
-                <div class="class-item ${c.extra ? "extra" : ""}">
-                    <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
-                    <div class="class-name">${c.name} ${c.extra ? "⭐ EXTRA" : ""}</div>
-                    <div class="class-details">👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}</div>
-                </div>
-            `).join("");
+            box.innerHTML = arr.map(c => {
+                const cancelledClass = c.isCancelled ? 'cancelled' : '';
+                const extraClass = c.extra && !c.isCancelled ? 'extra' : '';
+                return `
+                    <div class="class-item ${cancelledClass} ${extraClass}">
+                        ${c.isCancelled ? '<div class="cancel-badge">❌ CLASS CANCELLED</div>' : ''}
+                        <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
+                        <div class="class-name">${c.name} ${c.extra && !c.isCancelled ? "⭐ EXTRA" : ""}</div>
+                        <div class="class-details">
+                            📚 Batch: ${c.batch} | 🚪 ${c.room} | 📖 ${c.type}
+                            ${c.isCancelled ? `<br><em style="color: #ff6b6b;">${c.cancelReason}</em>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function selectTeacherBatch(batch) {
+            teacherSelectedBatch = batch;
+            document.getElementById("teacherBatchSelect").style.display = "none";
+            document.getElementById("teacherBatchHeader").style.display = "block";
+            document.getElementById("teacherBatchHeader").textContent = "Batch - " + batch;
+            document.getElementById("changeBatchBtn").style.display = "inline-block";
+        }
+
+        function changeTeacherBatch() {
+            teacherSelectedBatch = null;
+            document.getElementById("teacherBatchSelect").style.display = "grid";
+            document.getElementById("teacherBatchHeader").style.display = "none";
+            document.getElementById("changeBatchBtn").style.display = "none";
+            document.getElementById("teacherDayList").innerHTML = "";
+        }
+
+        function teacherFiltered() {
+            if (!teacherSelectedBatch) return [];
+            return classes.filter(c => c.batch === teacherSelectedBatch && c.teacherEmail === currentUser.email);
+        }
+
+        function switchTeacherTab(tab) {
+            document.querySelectorAll("#teacherUI .tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll("#teacherUI .tab-content").forEach(c => c.classList.remove("active"));
+            event.target.classList.add("active");
+
+            if (tab === "today") {
+                document.getElementById("teacherTodayTab").classList.add("active");
+                renderTeacherTodayAll();
+            } else if (tab === "week") {
+                if (!teacherSelectedBatch) {
+                    showNotification("⚠ Please select a batch first!");
+                    document.querySelectorAll("#teacherUI .tab").forEach(t => t.classList.remove("active"));
+                    document.querySelector("#teacherUI .tab").classList.add("active");
+                    return;
+                }
+                document.getElementById("teacherWeekTab").classList.add("active");
+            } else {
+                if (!teacherSelectedBatch) {
+                    showNotification("⚠ Please select a batch first!");
+                    return;
+                }
+                document.getElementById("teacherExtraTab").classList.add("active");
+                populateExtraDays();
+            }
         }
 
         function showTeacherDay(day) {
@@ -365,13 +376,63 @@
                 return;
             }
 
-            box.innerHTML = arr.map(c => `
-                <div class="class-item ${c.extra ? "extra" : ""}">
-                    <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
-                    <div class="class-name">${c.name} ${c.extra ? "⭐ EXTRA" : ""}</div>
-                    <div class="class-details">👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}</div>
-                </div>
-            `).join("");
+            const now = new Date();
+
+            box.innerHTML = arr.map(c => {
+                const cancelledClass = c.isCancelled ? 'cancelled' : '';
+                const extraClass = c.extra && !c.isCancelled ? 'extra' : '';
+                
+                const [h, m] = c.start.split(':').map(Number);
+                const classTime = new Date();
+                classTime.setHours(h, m, 0);
+                const canCancel = c.teacherEmail === currentUser.email && classTime > now && !c.isCancelled;
+
+                return `
+                    <div class="class-item ${cancelledClass} ${extraClass}">
+                        ${c.isCancelled ? '<div class="cancel-badge">❌ CLASS CANCELLED</div>' : ''}
+                        <div class="class-time">${to12Hour(c.start)} - ${to12Hour(c.end)}</div>
+                        <div class="class-name">${c.name} ${c.extra && !c.isCancelled ? "⭐ EXTRA" : ""}</div>
+                        <div class="class-details">
+                            👨‍🏫 ${c.teacher} | 🚪 ${c.room} | 📚 ${c.type}
+                            ${c.isCancelled ? `<br><em style="color: #ff6b6b;">${c.cancelReason}</em>` : ''}
+                        </div>
+                        ${canCancel ? `<button class="btn-cancel" onclick="cancelClass(${c.id})">Cancel Class</button>` : ''}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function cancelClass(classId) {
+            if (!confirm("Are you sure you want to cancel this class?")) return;
+
+            const cls = classes.find(c => c.id === classId);
+            if (!cls) return;
+
+            cls.isCancelled = true;
+            cls.cancelReason = "Cancelled by teacher";
+            cls.cancelTime = new Date().toISOString();
+
+            saveClasses();
+            showNotification("Class cancelled successfully!");
+            refreshAllViews();
+        }
+
+        function refreshAllViews() {
+            if (currentRole === "student") {
+                renderStudentToday();
+                renderStudentWeek();
+            } else if (currentRole === "teacher") {
+                renderTeacherTodayAll();
+                if (teacherSelectedBatch) {
+                    const activeDay = document.querySelector("#teacherWeekTab .day-btn.active");
+                    if (activeDay) showTeacherDay(activeDay.textContent.trim());
+                }
+            } else if (currentRole === "admin") {
+                renderAdminDashboard();
+                if (document.getElementById("modifyModal").classList.contains("show")) {
+                    renderClassList();
+                }
+            }
         }
 
         function populateExtraDays() {
@@ -402,24 +463,29 @@
                 start: document.getElementById("extraStart").value,
                 end: document.getElementById("extraEnd").value,
                 teacher: currentUser.name,
+                teacherEmail: currentUser.email,
                 room: document.getElementById("extraRoom").value,
                 type: document.getElementById("extraType").value,
                 extra: true,
-                batch: teacherSelectedBatch
+                batch: teacherSelectedBatch,
+                isCancelled: false,
+                cancelReason: "",
+                cancelTime: ""
             };
 
             classes.push(extraClass);
             saveClasses();
             showNotification("⭐ Extra class added!");
             document.getElementById("extraClassForm").reset();
-            renderTeacherToday();
+            renderTeacherTodayAll();
         });
 
-        // ADMIN FUNCTIONS
         function selectAdminBatch(batch) {
             adminSelectedBatch = batch;
             renderAdminDashboard();
-            renderClassList();
+            if (document.getElementById("modifyModal").classList.contains("show")) {
+                renderClassList();
+            }
             showNotification(batch ? ("Showing batch: " + batch) : "Showing ALL batches");
         }
 
@@ -444,10 +510,12 @@
         function renderAdminDashboard() {
             let list = adminFiltered();
             const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-            const todayList = list.filter(c => c.day === today);
+            const todayList = list.filter(c => c.day === today && !c.isCancelled);
+            const cancelledCount = list.filter(c => c.isCancelled).length;
 
             document.getElementById("totalClasses").textContent = list.length;
             document.getElementById("todayClasses").textContent = todayList.length;
+            document.getElementById("cancelledClasses").textContent = cancelledCount;
 
             const now = new Date();
             const next = todayList.filter(c => {
@@ -495,18 +563,21 @@
                 return diff !== 0 ? diff : a.start.localeCompare(b.start);
             });
 
-            container.innerHTML = sorted.map(c => `
-                <div class="class-list-item">
-                    <div>
-                        <strong>${c.name}</strong> — ${c.day} (${to12Hour(c.start)} - ${to12Hour(c.end)})
-                        <br><small>${c.teacher} | ${c.room} | Batch: ${c.batch}</small>
+            container.innerHTML = sorted.map(c => {
+                const cancelledStyle = c.isCancelled ? 'style="background: #ffe5e5; color: #888;"' : '';
+                return `
+                    <div class="class-list-item" ${cancelledStyle}>
+                        <div>
+                            <strong>${c.name}</strong> ${c.isCancelled ? '❌ CANCELLED' : ''} — ${c.day} (${to12Hour(c.start)} - ${to12Hour(c.end)})
+                            <br><small>${c.teacher} (${c.teacherEmail || 'No email'}) | ${c.room} | Batch: ${c.batch}</small>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-small btn-edit" onclick="editClass(${c.id})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteClass(${c.id})">Delete</button>
+                        </div>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn-small btn-edit" onclick="editClass(${c.id})">Edit</button>
-                        <button class="btn-small btn-delete" onclick="deleteClass(${c.id})">Delete</button>
-                    </div>
-                </div>
-            `).join("");
+                `;
+            }).join("");
         }
 
         function showAddClassForm() {
@@ -515,17 +586,31 @@
         }
 
         function addNewClass() {
+            const teacherEmail = document.getElementById("newClassTeacherEmail").value;
+            const teacherName = document.getElementById("newClassTeacher").value;
+
+            let finalTeacherName = teacherName;
+            if (teacherEmail) {
+                const users = JSON.parse(localStorage.getItem("users_v3"));
+                const teacher = users.find(u => u.email === teacherEmail && u.role === "teacher");
+                if (teacher) finalTeacherName = teacher.name;
+            }
+
             const obj = {
                 id: Date.now(),
                 name: document.getElementById("newClassName").value,
                 day: document.getElementById("newClassDay").value,
                 start: document.getElementById("newClassStart").value,
                 end: document.getElementById("newClassEnd").value,
-                teacher: document.getElementById("newClassTeacher").value,
+                teacher: finalTeacherName,
+                teacherEmail: teacherEmail || (finalTeacherName.toLowerCase().replace(/\s+/g, '') + "@college.edu"),
                 room: document.getElementById("newClassRoom").value,
                 type: document.getElementById("newClassType").value,
                 extra: false,
-                batch: adminSelectedBatch || null
+                batch: adminSelectedBatch || null,
+                isCancelled: false,
+                cancelReason: "",
+                cancelTime: ""
             };
 
             if (!obj.batch) {
@@ -549,6 +634,7 @@
             document.getElementById("newClassStart").value = "";
             document.getElementById("newClassEnd").value = "";
             document.getElementById("newClassTeacher").value = "";
+            document.getElementById("newClassTeacherEmail").value = "";
             document.getElementById("newClassRoom").value = "";
         }
 
@@ -561,6 +647,7 @@
             document.getElementById("newClassStart").value = c.start;
             document.getElementById("newClassEnd").value = c.end;
             document.getElementById("newClassTeacher").value = c.teacher;
+            document.getElementById("newClassTeacherEmail").value = c.teacherEmail || "";
             document.getElementById("newClassRoom").value = c.room;
             document.getElementById("newClassType").value = c.type;
 
@@ -579,11 +666,7 @@
         }
 
         function exportData() {
-            const data = {
-                classes,
-                users: JSON.parse(localStorage.getItem("users_v3"))
-            };
-
+            const data = { classes, users: JSON.parse(localStorage.getItem("users_v3")) };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
@@ -612,6 +695,12 @@
                             if (!cls.batch) {
                                 skipped++;
                             } else {
+                                if (cls.isCancelled === undefined) cls.isCancelled = false;
+                                if (!cls.cancelReason) cls.cancelReason = "";
+                                if (!cls.cancelTime) cls.cancelTime = "";
+                                if (!cls.teacherEmail) {
+                                    cls.teacherEmail = cls.teacher.toLowerCase().replace(/\s+/g, '') + "@college.edu";
+                                }
                                 fixed.push(cls);
                             }
                         });
@@ -629,7 +718,9 @@
                         );
 
                         renderAdminDashboard();
-                        renderClassList();
+                        if (document.getElementById("modifyModal").classList.contains("show")) {
+                            renderClassList();
+                        }
                     } catch (err) {
                         showNotification("Invalid file!");
                     }
@@ -650,30 +741,43 @@
         }
 
         function checkUpcomingClasses() {
-            if (currentRole !== "student" && currentRole !== "teacher") return;
-
-            let userBatch = currentUser.batch || teacherSelectedBatch;
-            if (!userBatch) return;
-
             const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
             const now = new Date();
+            let relevantClasses = [];
 
-            const list = classes.filter(c => c.day === today && c.batch === userBatch);
+            if (currentRole === "student") {
+                relevantClasses = classes.filter(c => 
+                    c.batch === currentUser.batch && 
+                    c.day === today &&
+                    !c.isCancelled
+                );
+            } else if (currentRole === "teacher") {
+                relevantClasses = classes.filter(c => 
+                    c.teacherEmail === currentUser.email && 
+                    c.day === today &&
+                    !c.isCancelled
+                );
+            } else {
+                return;
+            }
 
-            const next = list.find(c => {
+            const next = relevantClasses.find(c => {
                 const [h, m] = c.start.split(":");
                 const t = new Date();
                 t.setHours(h, m, 0);
 
                 let diff = t - now;
-                return diff > 0 && diff <= 2 * 60 * 60 * 1000;
+                return diff > 0 && diff <= 15 * 60 * 1000;
             });
 
             const alert = document.getElementById("alertBox");
 
             if (next) {
-                document.getElementById("alertMessage").textContent =
-                    `${next.name} starts at ${to12Hour(next.start)} in ${next.room}`;
+                let message = `${next.name} starts at ${to12Hour(next.start)} in ${next.room}`;
+                if (currentRole === "teacher") {
+                    message += ` (Batch: ${next.batch})`;
+                }
+                document.getElementById("alertMessage").textContent = message;
                 alert.classList.add("show");
             } else {
                 alert.classList.remove("show");

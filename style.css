@@ -10,6 +10,49 @@
             min-height: 100vh;
         }
 
+        .class-item.cancelled {
+            background: #ffe5e5 !important;
+            color: #888;
+            border-left-color: #ff6b6b !important;
+        }
+
+        .class-item.cancelled .class-name {
+            text-decoration: line-through;
+            color: #777;
+        }
+
+        .class-item.cancelled .class-time {
+            color: #999;
+        }
+
+        .cancel-badge {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            background: #fff;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .btn-cancel {
+            padding: 8px 16px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #ee5a52;
+            transform: translateY(-2px);
+        }
+
         .login-container {
             display: flex;
             justify-content: center;
@@ -94,6 +137,13 @@
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
+        }
+
+        .form-group small {
+            color: #666;
+            font-size: 12px;
+            display: block;
+            margin-top: 5px;
         }
 
         .btn-primary {
@@ -328,6 +378,7 @@
             margin-bottom: 15px;
             border-left: 5px solid #667eea;
             transition: all 0.3s;
+            position: relative;
         }
 
         .class-item:hover {
