@@ -1,4 +1,4 @@
- // GLOBAL DATA
+// GLOBAL DATA
         let classes = [];
         let currentUser = null;
         let currentRole = "student";
@@ -66,9 +66,19 @@
         // LOGIN / REGISTER
         function selectRole(r) {
             selectedRole = r;
+            
+            // Highlight active button
             document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
             event.target.classList.add("active");
 
+            // Batch dropdown visibility
+            if (r === "teacher" || r === "admin") {
+                document.getElementById("batchSelectRegister").style.display = "none";  // Hide for teacher/admin
+            } else {
+                document.getElementById("batchSelectRegister").style.display = "block"; // Show only for student
+            }
+
+            // Admin cannot register
             if (r === "admin") {
                 document.getElementById("registerForm").style.display = "none";
                 document.getElementById("loginForm").style.display = "block";
@@ -98,9 +108,20 @@
             let pass = document.getElementById("registerPassword").value;
             let batch = document.getElementById("registerBatch").value;
 
-            if (!name || !email || !pass || (selectedRole === "student" && !batch)) {
+            if (!name || !email || !pass) {
                 showNotification("Fill all fields");
                 return;
+            }
+
+            // Student must select batch
+            if (selectedRole === "student" && !batch) {
+                showNotification("Please select your batch");
+                return;
+            }
+
+            // Teacher should NOT have batch
+            if (selectedRole === "teacher") {
+                batch = null;
             }
 
             let users = JSON.parse(localStorage.getItem("users_v3"));
